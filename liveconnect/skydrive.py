@@ -3,11 +3,15 @@ import liveconnect.exceptions
 import requests
 import urllib
 
+def connect_skydrive():
+    client_id = liveconnect.config.get('liveconnect', 'client_id')
+    client_secret = liveconnect.config.get('liveconnect', 'client_secret')
+    return SkyDrive(client_id, client_secret)
 
 class SkyDrive(liveconnect.LiveConnect):
 
     def __init__(self, client_id, client_secret):
-        liveconnect.LiveConnect.__init__(self, client_id, client_secret)
+        super(SkyDrive, self).__init__(client_id, client_secret)
 
         self.api_url = "https://apis.live.net/v5.0/"
         self.default_scopes = ['wl.basic', 'wl.skydrive', 'wl.skydrive_update']
@@ -41,7 +45,7 @@ class SkyDrive(liveconnect.LiveConnect):
         url = "%s%s?%s" % (self.api_url, url, encoded_parameters)
         response = request_method(url, headers=headers, files=files)
         if response.status_code == 200:  # OK
-            return response.json()
+            return response
         else:
             response.raise_for_status()
 
@@ -49,11 +53,11 @@ class SkyDrive(liveconnect.LiveConnect):
         return self._request('get', 'me/skydrive/quota', auth_token, refresh_token=refresh_token)
 
     def get(self, file_id="", auth_token=None, refresh_token=None):
-        return self._request('get', 'me/skydrive/%s/content' % file_id,
+        url = '%s/content' % file_id
+        return self._request('get', url,
                                 auth_token,
                                 refresh_token=refresh_token,
-                                query={"download": 'true'},
-                                raw=True)
+                                query={"download": 'true', "suppress_redirects":'true'})
 
     def list_dir(self, folder='me/skydrive', auth_token=None, refresh_token=None):
         return self._request('get', '%s/files' % folder, auth_token, refresh_token=refresh_token)
