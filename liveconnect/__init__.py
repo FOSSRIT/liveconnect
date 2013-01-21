@@ -5,11 +5,12 @@ import urllib
 import ConfigParser
 import liveconnect.conf
 import liveconnect.exceptions
-config = ConfigParser.SafeConfigParser().read(liveconnect.conf.liveconnect_config_locations)
+config = ConfigParser.SafeConfigParser()
+config.read(liveconnect.conf.liveconnect_config_locations)
 
 def connect():
-	client_id = liveconnect.conf.get('liveconnect', 'client_id')
-	client_secret = liveconnect.conf.get('liveconnect', 'client_secret')
+	client_id = liveconnect.config.get('liveconnect', 'client_id')
+	client_secret = liveconnect.config.get('liveconnect', 'client_secret')
 	return LiveConnect(client_id, client_secret)
 
 class LiveConnect(object):
