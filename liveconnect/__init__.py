@@ -1,6 +1,6 @@
 # Author: Samuel Lucidi <mansam@csh.rit.edu>
 
-__version__ = "0.1.71"
+__version__ = "0.1.77"
 
 import requests
 import urllib
@@ -47,7 +47,7 @@ class LiveConnect(object):
 			params["grant_type"] = "authorization_code"
 		else:
 			raise liveconnect.exceptions.AuthorizationError('Must specify an authorization code or a refresh token.')
-		return requests.post(self.token_auth_url, params)
+		return requests.post(self.token_auth_url, params).json()
 
 	def generate_auth_url(self, scopes=['wl.basic'], redirect_uri=None):
 		"""

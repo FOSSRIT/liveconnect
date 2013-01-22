@@ -3,7 +3,7 @@ ez_setup.use_setuptools()
 from setuptools import setup, find_packages
 setup(
 	name = "liveconnect",
-	version = "0.1.71",
+	version = "0.1.77",
 	packages = find_packages(),
 	install_requires = ['requests'],
 	package_data = {
