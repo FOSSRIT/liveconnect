@@ -72,7 +72,7 @@ class SkyDrive(liveconnect.LiveConnect):
         return url
 
     def list_dir(self, folder='me/skydrive', access_token=None, refresh_token=None):
-        return self._request('get', '%s/files' % folder, access_token, refresh_token=refresh_token).json()
+        return self._request('get', '%s/files' % folder, access_token, refresh_token=refresh_token).json()['data']
 
     def info(self, file_id="", access_token=None, refresh_token=None):
         return self._request('get', file_id, access_token).json()
