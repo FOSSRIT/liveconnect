@@ -1,5 +1,7 @@
 # Author: Samuel Lucidi <mansam@csh.rit.edu>
 
+__version__ = "0.1.65"
+
 import requests
 import urllib
 import ConfigParser

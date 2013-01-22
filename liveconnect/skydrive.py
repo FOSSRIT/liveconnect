@@ -50,20 +50,32 @@ class SkyDrive(liveconnect.LiveConnect):
             response.raise_for_status()
 
     def get_quota(self, auth_token=None, refresh_token=None):
-        return self._request('get', 'me/skydrive/quota', auth_token, refresh_token=refresh_token)
+        return self._request('get', 'me/skydrive/quota', auth_token, refresh_token=refresh_token).json()
 
-    def get(self, file_id="", auth_token=None, refresh_token=None):
+    def get_share_link(self, file_id, auth_token=None, refresh_token=None, edit_link=False):
+        if edit_link:
+            link_suffix = "shared_edit_link"
+        else:
+            link_suffix = "shared_read_link"
+
+        url = '%s/%s' % (file_id, link_suffix)
+        response = self._request('get', url, auth_token, refresh_token=refresh_token)
+        return response.json()['link']
+
+    def get_download_link(self, file_id, auth_token=None, refresh_token=None):
         url = '%s/content' % file_id
-        return self._request('get', url,
+        response = self._request('get', url,
                                 auth_token,
                                 refresh_token=refresh_token,
                                 query={"download": 'true', "suppress_redirects":'true'})
+        url = response.json()['location']
+        return url
 
     def list_dir(self, folder='me/skydrive', auth_token=None, refresh_token=None):
-        return self._request('get', '%s/files' % folder, auth_token, refresh_token=refresh_token)
+        return self._request('get', '%s/files' % folder, auth_token, refresh_token=refresh_token).json()
 
     def info(self, file_id="", auth_token=None, refresh_token=None):
-        return self._request('get', file_id, auth_token)
+        return self._request('get', file_id, auth_token).json()
 
     def put(self, name=None, fobj=None, folder_id="me/skydrive", auth_token=None, refresh_token=None, overwrite=True):
         """
