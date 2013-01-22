@@ -23,7 +23,7 @@ class SkyDrive(liveconnect.LiveConnect):
                                                     scopes=scopes,
                                                     redirect_uri=redirect_uri)
 
-    def _request(self, method, url, auth_token, refresh_token=None, query={},
+    def _request(self, method, url, access_token, refresh_token=None, query={},
                                                        auth_header=False, files=None):
         """
         Make a request to the SkyDrive api. Returns a dictionary containing
@@ -32,13 +32,13 @@ class SkyDrive(liveconnect.LiveConnect):
         """
 
         params = {
-            "access_token": auth_token
+            "access_token": access_token
         }
         for k in query:
             params[k] = query[k]
         headers = {}
         if auth_header:
-            headers["Authorization"] = 'Bearer %s' % auth_token
+            headers["Authorization"] = 'Bearer %s' % access_token
 
         request_method = getattr(requests, method)
         encoded_parameters = urllib.urlencode(params)
@@ -49,35 +49,35 @@ class SkyDrive(liveconnect.LiveConnect):
         else:
             response.raise_for_status()
 
-    def get_quota(self, auth_token=None, refresh_token=None):
-        return self._request('get', 'me/skydrive/quota', auth_token, refresh_token=refresh_token).json()
+    def get_quota(self, access_token=None, refresh_token=None):
+        return self._request('get', 'me/skydrive/quota', access_token, refresh_token=refresh_token).json()
 
-    def get_share_link(self, file_id, auth_token=None, refresh_token=None, edit_link=False):
+    def get_share_link(self, file_id, access_token=None, refresh_token=None, edit_link=False):
         if edit_link:
             link_suffix = "shared_edit_link"
         else:
             link_suffix = "shared_read_link"
 
         url = '%s/%s' % (file_id, link_suffix)
-        response = self._request('get', url, auth_token, refresh_token=refresh_token)
+        response = self._request('get', url, access_token, refresh_token=refresh_token)
         return response.json()['link']
 
-    def get_download_link(self, file_id, auth_token=None, refresh_token=None):
+    def get_download_link(self, file_id, access_token=None, refresh_token=None):
         url = '%s/content' % file_id
         response = self._request('get', url,
-                                auth_token,
+                                access_token,
                                 refresh_token=refresh_token,
                                 query={"download": 'true', "suppress_redirects":'true'})
         url = response.json()['location']
         return url
 
-    def list_dir(self, folder='me/skydrive', auth_token=None, refresh_token=None):
-        return self._request('get', '%s/files' % folder, auth_token, refresh_token=refresh_token).json()
+    def list_dir(self, folder='me/skydrive', access_token=None, refresh_token=None):
+        return self._request('get', '%s/files' % folder, access_token, refresh_token=refresh_token).json()
 
-    def info(self, file_id="", auth_token=None, refresh_token=None):
-        return self._request('get', file_id, auth_token).json()
+    def info(self, file_id="", access_token=None, refresh_token=None):
+        return self._request('get', file_id, access_token).json()
 
-    def put(self, name=None, fobj=None, folder_id="me/skydrive", auth_token=None, refresh_token=None, overwrite=True):
+    def put(self, name=None, fobj=None, folder_id="me/skydrive", access_token=None, refresh_token=None, overwrite=True):
         """
         Upload a file to SkyDrive, by default overwriting any file that exists with the selected name.
 
@@ -90,8 +90,8 @@ class SkyDrive(liveconnect.LiveConnect):
         :param folder_id: SkyDrive ID of folder to create file in
         :type folder_id: str
 
-        :param auth_token: Access token of user to connect as
-        :type auth_token: str
+        :param access_token: Access token of user to connect as
+        :type access_token: str
 
         :param refresh_token: Refresh token of user to connect as
         :type refresh_token: str
@@ -103,4 +103,4 @@ class SkyDrive(liveconnect.LiveConnect):
 
         """
 
-        return self._request('post', "%s/files" % folder_id, auth_token, files={"file":(name, fobj)})
+        return self._request('post', "%s/files" % folder_id, access_token, files={"file":(name, fobj)})

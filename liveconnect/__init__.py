@@ -1,6 +1,6 @@
 # Author: Samuel Lucidi <mansam@csh.rit.edu>
 
-__version__ = "0.1.65"
+__version__ = "0.1.71"
 
 import requests
 import urllib
