@@ -16,12 +16,12 @@ class SkyDrive(liveconnect.LiveConnect):
         self.api_url = "https://apis.live.net/v5.0/"
         self.default_scopes = ['wl.basic', 'wl.skydrive', 'wl.skydrive_update']
 
-    def generate_auth_url(self, scopes=[], redirect_uri=None):
+    def generate_auth_url(self, scopes=[], redirect_uri=None, state=""):
         if not scopes:
             scopes = self.default_scopes
         return liveconnect.LiveConnect.generate_auth_url(self,
                                                     scopes=scopes,
-                                                    redirect_uri=redirect_uri)
+                                                    redirect_uri=redirect_uri, state=state)
 
     def _request(self, method, url, access_token, refresh_token=None, query={},
                                                        auth_header=False, files=None):

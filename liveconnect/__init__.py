@@ -49,7 +49,7 @@ class LiveConnect(object):
 			raise liveconnect.exceptions.AuthorizationError('Must specify an authorization code or a refresh token.')
 		return requests.post(self.token_auth_url, params).json()	
 
-	def generate_auth_url(self, scopes=['wl.basic'], redirect_uri=None):
+	def generate_auth_url(self, scopes=['wl.basic'], redirect_uri=None, state=""):
 		"""
 		Generate a link that a user must visit to authorize the app
 		to make requests in their name.
@@ -63,6 +63,7 @@ class LiveConnect(object):
 			"client_secret":self.client_secret,
 			"scope":' '.join(scopes),
 			"response_type":"code",
-			"redirect_uri":redirect_uri
+			"redirect_uri":redirect_uri,
+			"state":state
 		}
 		return "%s?%s" % (self.user_auth_url, urllib.urlencode(params))
