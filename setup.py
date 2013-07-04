@@ -1,11 +1,18 @@
-import ez_setup
-ez_setup.use_setuptools()
-from setuptools import setup, find_packages
+try:
+	from ez_setup import use_setuptools
+	use_setuptools()
+except ImportError:
+	pass
+try:
+	from setuptools import setup
+except ImportError:
+	from distutils.core import setup
 setup(
 	name = "liveconnect",
-	version = "0.1.89",
-	packages = find_packages(),
+	version = "0.1.113",
+	packages = ['liveconnect'],
 	install_requires = ['requests'],
+	py_modules= ['ez_setup'],
 	package_data = {
 		'' : ['*.md']
 	},
